@@ -2,8 +2,10 @@
 const overview = document.querySelector(".overview");
 //Global variable for my Github username//
 const username = "destiny1s";
+//Global variable to select the unordered list to display the repos list//
+const repoList = document.querySelector(".repo-list");
 
-//Fetch API JSON Data//
+//Fetch user API JSON Data//
 const gitUserInfo = async function () {
     //res or response = userInfo//
     const userInfo = await fetch(`https://api.github.com/users/${username}`);
@@ -14,7 +16,7 @@ const gitUserInfo = async function () {
 gitUserInfo();
 
 
-//Fetch and display user information//
+//Display user information//
 const displayUserInfo = function (data) {
     const userDiv = document.createElement("div");
     userDiv.classList.add("user-info");
@@ -29,4 +31,25 @@ const displayUserInfo = function (data) {
      <p><strong>Number of public repos: </strong>${data.public_repos}</p>
     </div>`;
     overview.append(userDiv);
+    gitRepos();
+};
+
+//Fetch Github repos//
+const gitRepos = async function () {
+    //res or response = fetchRepos//
+    const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`);
+    const repoData = await fetchRepos.json();
+
+    //console.log(repoData);
+    displayRepos(repoData);
+};
+
+//Display info about my repos//
+const displayRepos = function (repos) {
+    for (const repo of repos) {
+        const repoListItem = document.createElement("li");
+        repoListItem.classList.add("repo");
+        repoListItem.innerHTML = `<h3>${repo.name}</h3>`;
+        repoList.append(repoListItem);
+    }
 };
